@@ -21,8 +21,12 @@ contained in this directory.
 
 ## Usage
 
-- ***cd*** into the worktree directory of a branch
-- Trigger the hook by running either
+1. ***cd*** into the worktree directory of a branch
+    ```language
+    cd /path/to/worktree/branch/
+    ```
+    
+1. Trigger the hook by running either
 
     ```sh
     git checkout $(git branch --show-current)

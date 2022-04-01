@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # 
 # Called after a successful `git checkout` or `git switch`, this hook script
@@ -17,7 +17,7 @@ main() {
     was_branch_checkout="$3"
 
     # Local override of aliases that might exist for `git`
-    alias git=$(which git)
+    alias git='$(which git)'
 
     # $GIT_DIR is not the root directory of a bare repository.
     # Next command extracts it on both "normal" and bare repositories.
@@ -49,7 +49,7 @@ main() {
 }
 
 info() {
-    echo >&2 "post-checkout hook: ${1}"
+    echo -e >&2 "\npost-checkout hook:\n\t${1}\n"
 }
 
 main "$@"
