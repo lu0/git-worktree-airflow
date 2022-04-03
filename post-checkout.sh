@@ -41,7 +41,7 @@ main() {
             # Ignore everything but the worktree directory
             /usr/bin/ls -AI "${branch_dir_name}" "${git_dir}" > "${git_dir}/.airflowignore"
 
-            info ".airflowignore updated with everything except ${branch_dir_name}/"
+            info ".airflowignore updated to load DAGs from branch ${branch}"
         fi
     fi
 
