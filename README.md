@@ -14,20 +14,46 @@ only the DAGs contained in this directory**.
 Table of Contents
 ---
 - [Installation](#installation)
+  - [Using `pre-commit`](#using-pre-commit)
+  - [Manual](#manual)
 - [Usage](#usage)
-  - [Option 1: Using `git-worktree-wrapper`](#option-1-using-git-worktree-wrapper)
-  - [Option 2: Using vanilla `git`](#option-2-using-vanilla-git)
+  - [Recommended option: Using `git-worktree-wrapper`](#recommended-option-using-git-worktree-wrapper)
+  - [Alternative option: Using vanilla `git`](#alternative-option-using-vanilla-git)
   - [Examples](#examples)
 
 # Installation
 
-- Copy or link the `post-checkout.sh` script into the `hooks` directory of your
-`dags_folder` (which should be a bare repository), and rename it to
-`post-checkout`.
+## Using [`pre-commit`](https://pre-commit.com)
+
+Activate this post-checkout hook by adding it to your `.pre-commit-config.yaml`:
+
+```sh
+repos:
+  - repo: https://github.com/lu0/git-worktree-airflow
+    rev: v1.1.0
+    hooks:
+      - id: airflow-worktree
+        name: Update .airflowignore to load DAGs from worktree
+        stages: [post-checkout]
+        always_run: true
+        verbose: true
+```
+
+And installing it:
+
+```sh
+pre-commit install --hook-type post-checkout
+```
+
+## Manual
+
+- Copy or link the script `select-airflow-worktree.sh` into the `hooks`
+directory of your `dags_folder` (which should be a bare repository), and rename
+it to `post-checkout`.
 
 - Example:
 
-<pre><code>ln -srf post-checkout.sh <b>/path/to/your/dags_folder</b>/hooks/post-checkout</pre></code>
+<pre><code>ln -srf select-airflow-worktree.sh <b>/path/to/your/dags_folder</b>/hooks/post-checkout</pre></code>
 
 *Note*: Make the script executable with `chmod +x post-checkout` if you
 ***copied** the script instead of linking it.
@@ -35,7 +61,7 @@ Table of Contents
 
 # Usage
 
-## Option 1: Using [`git-worktree-wrapper`](https://github.com/lu0/git-worktree-wrapper)
+## Recommended option: Using [`git-worktree-wrapper`](https://github.com/lu0/git-worktree-wrapper)
 
 - Install [`git-worktree-wrapper`](https://github.com/lu0/git-worktree-wrapper).
 
@@ -44,12 +70,10 @@ Table of Contents
     ```sh
     $ git checkout <tree-ish>
 
-    post-checkout hook:
-            .airflowignore updated to load DAGs from <tree-ish>
+        .airflowignore updated to load DAGs from <tree-ish>
     ```
 
-## Option 2: Using vanilla `git`
-
+## Alternative option: Using vanilla `git`
 
 1. First ***cd*** into the worktree directory of a tree-ish
     ```language
@@ -62,8 +86,7 @@ Table of Contents
     ```sh
     $ git checkout <tree-ish>
 
-    post-checkout hook:
-            .airflowignore updated to load DAGs from <tree-ish>
+        .airflowignore updated to load DAGs from <tree-ish>
     ```
 
 ## Examples
@@ -98,15 +121,14 @@ Let's say we have a `dags` folder pointing to a bare repository in `~/dags` with
 And you want the Airflow UI to show the DAGs contained in the `feature/dag_4` worktree.
 
 - If you are using
-[`git-worktree-wrapper`](https://github.com/lu0/git-worktree-wrapper), just
-checkout into the tree-ish. You can checkout from any nested worktree.
+[`git-worktree-wrapper`](https://github.com/lu0/git-worktree-wrapper) and
+[`pre-commit`](#using-pre-commit), just checkout into the tree-ish. You can
+checkout from any nested worktree.
 
     ```sh
     $ git checkout feature/dag_4
-
-    post-checkout hook:
-            .airflowignore updated to load DAGs from feature/dag_4
     ```
+    ![hook showcase to feature/dag_4](assets/hook-showcase-0.png)
 
 
 - If you are using vanilla `git`:
@@ -114,13 +136,12 @@ checkout into the tree-ish. You can checkout from any nested worktree.
     ```language
     $ cd ~/dags
     $ cd feature/dag_4
-    $ git checkout feature/dag4
+    $ git checkout feature/dag_4
 
-    post-checkout hook:
-            .airflowignore updated to load DAGs from feature/dag_4
+        .airflowignore updated to load DAGs from feature/dag_4
     ```
 
-Either way, the post-checkout hook will create an `.airflowignore` file with the following contents:
+Either way, the post-checkout hook will create a file named `.airflowignore` with the following contents:
 
 *Note: Directories and files common to bare repositories are hidden.*
 

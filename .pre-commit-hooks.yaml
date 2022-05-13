@@ -1,0 +1,5 @@
+-   id: airflow-worktree
+    name: Update .airflowignore
+    entry: select-airflow-worktree.sh
+    language: script
+    description: "Update .airflowignore to load DAGs from checkedout worktree"

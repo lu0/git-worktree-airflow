@@ -13,8 +13,12 @@
 #           (changing branches, flag=1).
 # 
 
-main() {
-    was_branch_checkout="$3"
+set -euo pipefail
+
+select-airflow-worktree() {
+    # Defaults to argument passed by pre-commit framework if
+    # not triggered by vanilla git
+    was_branch_checkout="${3:-${PRE_COMMIT_CHECKOUT_TYPE}}"
 
     # Local override of aliases that might exist for `git`
     git() {
@@ -32,29 +36,30 @@ main() {
     if [ "${was_branch_checkout}" = 1 ]; then
 
         if [ "${is_bare_repo}" == false ]; then
-            info "Not a bare repo, ignoring Airflow hook."
+            info "Not a bare repo, skipping airflow-worktree"
         else
             # Informationn of the worktree we are in
             worktree_info=$(git worktree list | grep "$PWD " | xargs)
 
             # DOES NOT SUPPORT SPACES IN NAME OF BRANCHES/WORKTREES/DIRECTORIES.
-            worktree_abs_path=$(echo ${worktree_info} | cut -d" " -f1)
+            worktree_abs_path=$(echo "${worktree_info}" | cut -d" " -f1)
 
             # Path to the workspace relative to the repository's root directory
-            worktree_rel_path="${worktree_abs_path##${git_dir}/}"
+            worktree_rel_path="${worktree_abs_path##"${git_dir}"/}"
 
             # Ignore everything but the worktree directory
             /usr/bin/env ls -AI "${worktree_rel_path}" "${git_dir}" > "${git_dir}/.airflowignore"
 
             info ".airflowignore updated to load DAGs from ${worktree_rel_path}"
         fi
+    else
+        info "Not a branch checkout, skipping airflow-worktree."
     fi
-
     return 0
 }
 
 info() {
-    echo -e >&2 "\npost-checkout hook:\n\t${1}\n"
+    echo -e >&2 "\t${1}\n"
 }
 
-main "$@"
+select-airflow-worktree "$@"
