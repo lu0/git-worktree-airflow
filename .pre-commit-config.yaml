@@ -7,7 +7,7 @@ repos:
 
   # Showcase for this repo's hook
   - repo: https://github.com/lu0/git-worktree-airflow
-    rev: v1.1.0
+    rev: v1.1.1
     hooks:
       - id: airflow-worktree
         name: Update .airflowignore to load DAGs from worktree
