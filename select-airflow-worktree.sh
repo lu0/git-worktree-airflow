@@ -28,7 +28,7 @@ select-airflow-worktree() {
     # $GIT_DIR is not the root directory of a bare repository.
     # Next command extracts it on both "normal" and bare repositories.
     # DOES NOT SUPPORT SPACES IN NAME OF BRANCHES/WORKTREES/DIRECTORIES.
-    git_dir=$(git worktree list | head -n 1 | cut -d" " -f1)
+    git_dir=$(head -n 1 < <(git worktree list) | cut -d" " -f1)
 
     # Returns true or false
     is_bare_repo=$(git config --get core.bare)
