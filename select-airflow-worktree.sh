@@ -38,7 +38,7 @@ select-airflow-worktree() {
         if [ "${is_bare_repo}" == false ]; then
             info "Not a bare repo, skipping airflow-worktree"
         else
-            # Informationn of the worktree we are in
+            # Information of the worktree we are in
             worktree_info=$(git worktree list | grep "$PWD " | xargs)
 
             # DOES NOT SUPPORT SPACES IN NAME OF BRANCHES/WORKTREES/DIRECTORIES.
