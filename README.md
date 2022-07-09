@@ -30,7 +30,7 @@ Activate this post-checkout hook by adding it to your `.pre-commit-config.yaml`:
 ```sh
 repos:
   - repo: https://github.com/lu0/git-worktree-airflow
-    rev: v1.1.1
+    rev: v1.1.2
     hooks:
       - id: airflow-worktree
         name: Update .airflowignore to load DAGs from worktree

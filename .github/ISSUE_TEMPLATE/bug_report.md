@@ -37,7 +37,7 @@ If applicable, add screenshots to help explain your problem.
  - Git wrapper: i.e. None or [git-worktree-wrapper](https://github.com/lu0/git-worktree-wrapper)
  - Shell: i.e. Bash 5.0.16
  - Airflow version: i.e. 2.2.5
- - Repository version: i.e. v1.1.1 or commit hash
+ - Repository version: i.e. v1.1.2 or commit hash
 
 
 **Additional context**
