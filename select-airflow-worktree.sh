@@ -47,8 +47,12 @@ select-airflow-worktree() {
             # Path to the workspace relative to the repository's root directory
             worktree_rel_path="${worktree_abs_path##"${git_dir}"/}"
 
-            # Ignore everything but the worktree directory
-            /usr/bin/env ls --file-type -AI "${worktree_rel_path}" "${git_dir}" > "${git_dir}/.airflowignore"
+            # Ignore all directories except root and worktree
+            /usr/bin/env find "${git_dir}" -maxdepth 1 -type d \
+                -not -path "${git_dir}" \
+                -not -path "${worktree_abs_path}" \
+                -printf '^%P/\n' | sort \
+                > "${git_dir}/.airflowignore"
 
             info ".airflowignore updated to load DAGs from ${worktree_rel_path}"
         fi
