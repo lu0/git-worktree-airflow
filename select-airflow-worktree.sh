@@ -39,11 +39,11 @@ select-airflow-worktree() {
                         (
                 git worktree list |
                     awk '{print $1}' |                   # Use the first column (worktree paths)
-                    grep -vE "^${git_dir}$" |            # Exclude the git's root dir
+                    grep -vE "^${git_root_dir}$" |            # Exclude the git's root dir
                     grep -vE "^${worktree_abs_path}$" |  # Exclude the current worktree
-                    sed "s|${git_dir}/||g" |             # Convert worktrees to paths relative to the git's root dir
-                    sed 's/.*/^&$/'                      # Append ^ at start and $ at end to ignore exact matches
-            ) > "${git_dir}/.airflowignore"
+                    sed "s|${git_root_dir}/||g" |             # Convert worktrees to paths relative to the git's root dir
+                    sed 's/.*/^&\//'                     # Append ^ at start and / at end to ignore directory matches
+            ) > "${git_root_dir}/.airflowignore"
 
             info ".airflowignore updated to load DAGs from ${worktree_rel_path}"
         fi
