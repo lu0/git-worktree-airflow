@@ -25,12 +25,6 @@ select-airflow-worktree() {
         /usr/bin/env git "$@"
     }
 
-    # $GIT_DIR is not the root directory of a bare repository.
-    # Next command extracts it on both "normal" and bare repositories.
-    # DOES NOT SUPPORT SPACES IN NAME OF BRANCHES/WORKTREES/DIRECTORIES.
-    git_dir=$(head -n 1 < <(git worktree list) | cut -d" " -f1)
-
-    # Returns true or false
     is_bare_repo=$(git config --get core.bare)
 
     if [ "${was_branch_checkout}" = 1 ]; then
@@ -38,6 +32,8 @@ select-airflow-worktree() {
         if [ "${is_bare_repo}" == false ]; then
             info "Not a bare repo, skipping airflow-worktree"
         else
+            git_root_dir=$(git rev-parse --git-common-dir)
+            
             # Information of the worktree we are in
             worktree_info=$(git worktree list | grep "$PWD " | xargs)
 
@@ -45,14 +41,14 @@ select-airflow-worktree() {
             worktree_abs_path=$(echo "${worktree_info}" | cut -d" " -f1)
 
             # Path to the workspace relative to the repository's root directory
-            worktree_rel_path="${worktree_abs_path##"${git_dir}"/}"
+            worktree_rel_path="${worktree_abs_path##"${git_root_dir}"/}"
 
             # Ignore all directories except root and worktree
-            /usr/bin/env find "${git_dir}" -maxdepth 1 -type d \
-                -not -path "${git_dir}" \
+            /usr/bin/env find "${git_root_dir}" -maxdepth 1 -type d \
+                -not -path "${git_root_dir}" \
                 -not -path "${worktree_abs_path}" \
                 -printf '^%P/\n' | sort \
-                > "${git_dir}/.airflowignore"
+                > "${git_root_dir}/.airflowignore"
 
             info ".airflowignore updated to load DAGs from ${worktree_rel_path}"
         fi
