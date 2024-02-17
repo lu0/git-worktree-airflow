@@ -33,14 +33,7 @@ select-airflow-worktree() {
             info "Not a bare repo, skipping airflow-worktree"
         else
             git_root_dir=$(git rev-parse --git-common-dir)
-            
-            # Information of the worktree we are in
-            worktree_info=$(git worktree list | grep "$PWD " | xargs)
-
-            # DOES NOT SUPPORT SPACES IN NAME OF BRANCHES/WORKTREES/DIRECTORIES.
-            worktree_abs_path=$(echo "${worktree_info}" | cut -d" " -f1)
-
-            # Path to the workspace relative to the repository's root directory
+            worktree_abs_path=$(git rev-parse --show-toplevel)
             worktree_rel_path="${worktree_abs_path##"${git_root_dir}"/}"
 
             # Ignore all directories except root and worktree
